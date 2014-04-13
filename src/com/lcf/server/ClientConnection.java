@@ -119,7 +119,7 @@ public class ClientConnection implements Runnable {
 									rsmd = rset.getMetaData();
 
 									func = null;
-									reply = "CheckIn";
+									reply = "checkin";
 									while (rset.next()) {
 										for (int i = 1; i <= rsmd
 												.getColumnCount(); i++) {
@@ -204,7 +204,27 @@ public class ClientConnection implements Runnable {
 								} else {
 									reply = "NoAction";
 								}
+							}else if (commands[5].equals("cancheckout")) {
+								Date dNow = new Date();
+								SimpleDateFormat ft = new SimpleDateFormat(
+										"yyyy-MM-dd");
+								String today = ft.format(dNow);
+								
+								rset = stat
+										.executeQuery("select RID from reservation where UID = \""
+												+ commands[1]
+												+ "\" and CHECKOUTDATE = \"" + today + "\"");
+
+								
+								if(rset.first()){
+									reply = "checkout";
+								} else {
+									reply = "NoAction";
+								}
+							} else {
+								reply = "NoAction";
 							}
+
 						} else if (func.equals("R")
 								&& commands[5].equals("immediate")) {
 							rset = stat
@@ -224,6 +244,8 @@ public class ClientConnection implements Runnable {
 								reply = "NoAction";
 							}
 
+						} else {
+							reply = "NoAction";
 						}
 						rset.close();
 
